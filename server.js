@@ -6,7 +6,8 @@ require ('dotenv').config();
 const { graphqlHTTP } = require ('express-graphql');
 const schema = require ('./schema/schema');
 const connectDB = require ('./config/db');
-const PORT = process.env.PORT || 4000;
+
+const path = require('path');
 
 //Connect to database
 connectDB(); 
@@ -22,6 +23,14 @@ app.use(
     graphiql: process.env.NODE_ENV === 'production'
   })
 );
+
+app.use(express.static('public'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
+const PORT = process.env.PORT || 4000;
 
 app.post('/checkout', async (req, res) => {
   console.log(req.body);
